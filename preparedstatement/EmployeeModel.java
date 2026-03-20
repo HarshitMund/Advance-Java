@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class UserModel {
+public class EmployeeModel {
 
-	public int add(UserBean bean) throws SQLException {
+	public int add(EmployeeBean bean) throws Exception {
 
 		Connection conn = null;
 
@@ -16,23 +16,21 @@ public class UserModel {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
-
 			conn.setAutoCommit(false);
 
-			PreparedStatement pstm = conn.prepareStatement("insert into st_user values(?, ?, ?, ?, ?, ?)");
+			PreparedStatement pstm = conn.prepareStatement("insert into Employee values(?, ?, ?, ?, ?)");
 
-			pstm.setInt(1, bean.getId());
-			pstm.setString(2, bean.getFirstName());
-			pstm.setString(3, bean.getLastName());
-			pstm.setString(4, bean.getLogin());
-			pstm.setString(5, bean.getPasword());
-			pstm.setDate(6, new java.sql.Date(bean.getDob().getTime()));
+			pstm.setInt(1, bean.getID());
+			pstm.setString(2, bean.getNAME());
+			pstm.setString(3, bean.getCOMPANY());
+			pstm.setInt(4, bean.getSAALARY());
+			pstm.setInt(5, bean.getDEPT_NO());
 
 			int i = pstm.executeUpdate();
+			System.out.println(i + " rows affected (rows inserted)");
 
-			System.out.println(i + " row affected(record inserted)");
-			conn.commit();
 			pstm.close();
+			conn.commit();
 
 		} catch (Exception e) {
 
@@ -43,11 +41,10 @@ public class UserModel {
 			conn.close();
 		}
 
-		return bean.getId();
-
+		return bean.getID();
 	}
 
-	public void update(UserBean bean) throws SQLException {
+	public void update(EmployeeBean bean) throws Exception {
 
 		Connection conn = null;
 
@@ -56,24 +53,22 @@ public class UserModel {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
-
 			conn.setAutoCommit(false);
 
 			PreparedStatement pstm = conn.prepareStatement(
-					"update st_user set FirstName = ?, LastName = ?, login = ?, pasword = ?, dob = ? where id = ?");
+					"update Employee set NAME = ?, COMPANY = ?, SAALARY = ?, DEPT_ID = ? where id = ?");
 
-			pstm.setString(1, bean.getFirstName());
-			pstm.setString(2, bean.getLastName());
-			pstm.setString(3, bean.getLogin());
-			pstm.setString(4, bean.getPasword());
-			pstm.setDate(5, new java.sql.Date(bean.getDob().getTime()));
-			pstm.setInt(6, bean.getId());
+			pstm.setString(1, bean.getNAME());
+			pstm.setString(2, bean.getCOMPANY());
+			pstm.setInt(3, bean.getSAALARY());
+			pstm.setInt(4, bean.getDEPT_NO());
+			pstm.setInt(5, bean.getID());
 
 			int i = pstm.executeUpdate();
+			System.out.println(i + " rows affected (rows updated)");
 
-			System.out.println(i + " row affected(record update)");
-			conn.commit();
 			pstm.close();
+			conn.commit();
 
 		} catch (Exception e) {
 
@@ -83,10 +78,10 @@ public class UserModel {
 		} finally {
 			conn.close();
 		}
-
+		
 	}
 
-	public void delete(UserBean bean) throws SQLException {
+	public void delete(EmployeeBean bean) throws Exception {
 
 		Connection conn = null;
 
@@ -95,19 +90,17 @@ public class UserModel {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
-
 			conn.setAutoCommit(false);
 
-			PreparedStatement pstm = conn.prepareStatement(
-					"delete from st_user where id = ?");
+			PreparedStatement pstm = conn.prepareStatement("delete from Employee where id = ?");
 
-			pstm.setInt(1, bean.getId());
-
+			pstm.setInt(1, bean.getID());
+	
 			int i = pstm.executeUpdate();
+			System.out.println(i + " rows affected (rows deleted)");
 
-			System.out.println(i + " row affected(record update)");
-			conn.commit();
 			pstm.close();
+			conn.commit();
 
 		} catch (Exception e) {
 
