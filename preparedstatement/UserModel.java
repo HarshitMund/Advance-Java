@@ -19,7 +19,7 @@ public class UserModel {
 
 			conn.setAutoCommit(false);
 
-			PreparedStatement pstm = conn.prepareStatement("insert into st_user values(?, ?, ?, ?, ?, ?");
+			PreparedStatement pstm = conn.prepareStatement("insert into st_user values(?, ?, ?, ?, ?, ?)");
 
 			pstm.setInt(1, bean.getId());
 			pstm.setString(2, bean.getFirstName());
