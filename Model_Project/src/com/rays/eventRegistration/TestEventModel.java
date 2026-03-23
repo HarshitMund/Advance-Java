@@ -6,9 +6,10 @@ public class TestEventModel {
 
 	public static void main(String[] args) throws Exception {
 
-		testAdd();
+//		testAdd();
 //		testUpdate();
 //		testDelete();
+		testFindByPK();
 
 	}
 
@@ -54,6 +55,21 @@ public class TestEventModel {
 		EventModel model = new EventModel();
 		model.delete(bean);
 
+	}
+	
+	public static void testFindByPK() throws Exception{
+		
+		EventBean bean = new EventBean();
+		EventModel model = new EventModel();
+		
+		bean = model.findByPK(1);
+		
+		System.out.print(bean.getId());
+		System.out.print("\t" + bean.getPraticipant_name());
+		System.out.print("\t" + bean.getEvent_name());
+		System.out.print("\t" + bean.getEmail());
+		System.out.println("\t" + bean.getRegistration_date());
+		
 	}
 
 }

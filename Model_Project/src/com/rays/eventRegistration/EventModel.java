@@ -3,6 +3,7 @@ package com.rays.eventRegistration;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Date;
 
@@ -107,6 +108,41 @@ public class EventModel {
 			conn.close();
 		}
 		
+	}
+	
+	public EventBean findByPK(int id) throws Exception{
+		
+		EventBean bean = null;
+		Connection conn = null;
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/modelproject", "root", "root");
+			
+			PreparedStatement pstm = conn.prepareStatement("select * from event_registration where id = ?");
+			pstm.setInt(1, id);
+			
+			ResultSet rs = pstm.executeQuery();
+			
+			while(rs.next()) {
+				bean = new EventBean();
+				bean.setId(rs.getInt(1));
+				bean.setPraticipant_name(rs.getString(2));
+				bean.setEvent_name(rs.getString(3));
+				bean.setEmail(rs.getString(4));
+				bean.setRegistration_date(rs.getDate(5));
+			}
+			
+			pstm.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			conn.close();
+		}
+		
+		return bean;
 	}
 
 }
