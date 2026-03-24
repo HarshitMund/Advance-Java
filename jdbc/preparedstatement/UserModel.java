@@ -5,12 +5,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserModel {
 
-	public int add(UserBean bean) throws SQLException {
+	public int add(UserBean bean) throws Exception {
 
 		Connection conn = null;
+		
+		UserBean existBean = findByLogin(bean.getLogin());
+		
+		if(existBean != null)
+			throw new Exception("login already exist");
 
 		try {
 
@@ -194,24 +201,24 @@ public class UserModel {
 		return bean;
 	}
 
-	public UserBean authenticate(String login, String password) throws Exception{
-		
+	public UserBean authenticate(String login, String password) throws Exception {
+
 		Connection conn = null;
 		UserBean bean = null;
-		
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			
+
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
-			
+
 			PreparedStatement pstm = conn.prepareStatement("select * from st_user where login = ? and pasword = ?");
-			
+
 			pstm.setString(1, login);
 			pstm.setString(2, password);
-			
+
 			ResultSet rs = pstm.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				bean = new UserBean();
 				bean.setId(rs.getInt(1));
 				bean.setFirstName(rs.getString(2));
@@ -220,14 +227,93 @@ public class UserModel {
 				bean.setPasword(rs.getString(5));
 				bean.setDob(rs.getDate(6));
 			}
-			
+
 			pstm.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			conn.close();
 		}
-		
+
 		return bean;
+	}
+
+	public List findAllRecords() throws Exception {
+
+		List list = new ArrayList();
+		UserBean bean = null;
+		Connection conn = null;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+
+			PreparedStatement pstm = conn.prepareStatement("select * from st_user");
+
+			ResultSet rs = pstm.executeQuery();
+
+			while (rs.next()) {
+				bean = new UserBean();
+				bean.setId(rs.getInt(1));
+				bean.setFirstName(rs.getString(2));
+				bean.setLastName(rs.getString(3));
+				bean.setLogin(rs.getString(4));
+				bean.setPasword(rs.getString(5));
+				bean.setDob(rs.getDate(6));
+				list.add(bean);
+			}
+			pstm.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			conn.close();
+		}
+
+		return list;
+	}
+	
+	public List<UserBean> search(UserBean bean) throws Exception {
+		
+		List<UserBean> list = new ArrayList<UserBean>();
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+		
+		StringBuffer sb = new StringBuffer("select * from st_user where 1 = 1 ");
+		
+		if (bean != null) {
+			
+			if (bean.getFirstName() != null && bean.getFirstName().length() > 0)
+				sb.append("and FirstName like '" + bean.getFirstName() + "%'");
+			
+			if (bean.getLastName() != null && bean.getLastName().length() > 0)
+				sb.append("and LastName like '" + bean.getLastName() + "%'");
+			
+			if (bean.getId() != 0 && bean.getId() > 0)
+				sb.append("and id = " + bean.getId());
+		}
+		
+		PreparedStatement pstm = conn.prepareStatement(sb.toString());
+		
+		ResultSet rs = pstm.executeQuery();
+		
+		while(rs.next()) {
+			bean = new UserBean();
+			bean.setId(rs.getInt(1));
+			bean.setFirstName(rs.getString(2));
+			bean.setLastName(rs.getString(3));
+			bean.setLogin(rs.getString(4));
+			bean.setPasword(rs.getString(5));
+			bean.setDob(rs.getDate(6));
+			list.add(bean);
+		}
+		
+		pstm.close();
+		conn.close();
+		
+		return list;
 	}
 }

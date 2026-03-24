@@ -3,7 +3,10 @@ package com.rays.jdbc.preparedstatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EmployeeModel {
 
@@ -78,7 +81,7 @@ public class EmployeeModel {
 		} finally {
 			conn.close();
 		}
-		
+
 	}
 
 	public void delete(EmployeeBean bean) throws Exception {
@@ -95,7 +98,7 @@ public class EmployeeModel {
 			PreparedStatement pstm = conn.prepareStatement("delete from Employee where id = ?");
 
 			pstm.setInt(1, bean.getID());
-	
+
 			int i = pstm.executeUpdate();
 			System.out.println(i + " rows affected (rows deleted)");
 
@@ -113,4 +116,116 @@ public class EmployeeModel {
 
 	}
 
+	public List searchByCompany(String company) throws Exception {
+
+		List list = new ArrayList();
+		EmployeeBean bean = null;
+		Connection conn = null;
+
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+
+			PreparedStatement pstm = conn.prepareStatement("select * from employee where COMPANY = ?");
+			pstm.setString(1, company);
+
+			ResultSet rs = pstm.executeQuery();
+
+			while (rs.next()) {
+				bean = new EmployeeBean();
+				bean.setID(rs.getInt(1));
+				bean.setNAME(rs.getString(2));
+				bean.setCOMPANY(rs.getString(3));
+				bean.setSAALARY(rs.getInt(4));
+				bean.setDEPT_NO(rs.getInt(5));
+				list.add(bean);
+			}
+
+			pstm.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			conn.close();
+		}
+
+		return list;
+	}
+
+	public EmployeeBean FindById(int id) throws Exception {
+		
+		EmployeeBean bean = null;
+		Connection conn = null;
+		
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+			
+			PreparedStatement pstm = conn.prepareStatement("select * from employee where id = ?");
+			pstm.setInt(1, id);
+			
+			ResultSet rs = pstm.executeQuery();
+			
+			while(rs.next()) {
+				bean = new EmployeeBean();
+				bean.setID(rs.getInt(1));
+				bean.setNAME(rs.getString(2));
+				bean.setCOMPANY(rs.getString(3));
+				bean.setSAALARY(rs.getInt(4));
+				bean.setDEPT_NO(rs.getInt(5));
+			}
+			pstm.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			conn.close();
+		}
+		
+		return bean;
+	}
+	
+	public List<EmployeeBean> search(EmployeeBean bean) throws Exception {
+		
+		List<EmployeeBean> list = new ArrayList<EmployeeBean>();
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+		
+		StringBuffer sb = new StringBuffer("select * from employee where 1 = 1 ");
+		
+		if(bean != null) {
+			
+			if(bean.getNAME() != null && bean.getNAME().length() > 0)
+				sb.append("and NAME like '" + bean.getNAME() + "%'");
+			
+			if(bean.getCOMPANY() != null && bean.getCOMPANY().length() > 0)
+				sb.append("and COMPANY like '" + bean.getCOMPANY() + "%'");
+			
+			if(bean.getID() != 0 && bean.getID() > 0)
+				sb.append("and ID = " + bean.getID());
+		}
+		
+		PreparedStatement pstm = conn.prepareStatement(sb.toString());
+		
+		ResultSet rs = pstm.executeQuery();
+		
+		while(rs.next()) {
+			bean = new EmployeeBean();
+			bean.setID(rs.getInt(1));
+			bean.setNAME(rs.getString(2));
+			bean.setCOMPANY(rs.getString(3));
+			bean.setSAALARY(rs.getInt(4));
+			bean.setDEPT_NO(rs.getInt(5));
+			list.add(bean);
+		}
+		
+		pstm.close();
+		conn.close();
+		
+		return list;
+	}
 }

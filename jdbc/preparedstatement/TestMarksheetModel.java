@@ -1,12 +1,18 @@
 package com.rays.jdbc.preparedstatement;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class TestMarksheetModel {
 
 	public static void main(String[] args) throws Exception {
 
 //		testAdd();
 //		testUpdate();
-		testDelete();
+//		testDelete();
+//		testFindStudentByPercentage();
+		testSearch();
 
 	}
 
@@ -57,6 +63,52 @@ public class TestMarksheetModel {
 
 		System.out.println("Record Deleted");
 
+	}
+	
+	public static void testFindStudentByPercentage() throws Exception {
+		
+		MarksheetModel model = new MarksheetModel();
+		List list = new ArrayList();
+		
+		list = model.findStudentByPercentage(60);
+		
+		Iterator i = list.iterator();
+		
+		while(i.hasNext()) {
+			MarksheetBean bean = (MarksheetBean) i.next();
+			System.out.print(bean.getId());
+			System.out.print("\t" + bean.getRollNo());
+			System.out.print("\t" + bean.getName());
+			System.out.print("\t" + bean.getPhy());
+			System.out.print("\t" + bean.getChm());
+			System.out.println("\t" + bean.getMaths());
+		}
+	}
+	
+	public static void testSearch() throws Exception {
+		
+		MarksheetBean bean = new MarksheetBean();
+		MarksheetModel model = new MarksheetModel();
+		
+		List<MarksheetBean> list = new ArrayList<MarksheetBean>();
+		
+//		bean.setId(5);
+//		bean.setRollNo(201);
+		bean.setName("Dev");
+		
+		list = model.search(bean);
+		
+		Iterator<MarksheetBean> it = list.iterator();
+		
+		while(it.hasNext()) {
+			bean = it.next();
+			System.out.print(bean.getId());
+			System.out.print("\t" + bean.getRollNo());
+			System.out.print("\t" + bean.getName());
+			System.out.print("\t" + bean.getPhy());
+			System.out.print("\t" + bean.getChm());
+			System.out.println("\t" + bean.getMaths());
+		}
 	}
 
 }

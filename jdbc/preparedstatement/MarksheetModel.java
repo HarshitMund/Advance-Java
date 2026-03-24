@@ -3,6 +3,9 @@ package com.rays.jdbc.preparedstatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MarksheetModel {
 
@@ -14,7 +17,7 @@ public class MarksheetModel {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/marksheet", "root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
 			conn.setAutoCommit(false);
 
 			PreparedStatement pstmt = conn.prepareStatement("insert into marksheet values(?, ?, ?, ?, ?, ?)");
@@ -55,7 +58,7 @@ public class MarksheetModel {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/marksheet", "root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
 			conn.setAutoCommit(false);
 
 			PreparedStatement pstmt = conn.prepareStatement(
@@ -95,7 +98,7 @@ public class MarksheetModel {
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 
-			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/marksheet", "root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
 			conn.setAutoCommit(false);
 
 			PreparedStatement pstmt = conn.prepareStatement(
@@ -121,4 +124,91 @@ public class MarksheetModel {
 		}
 
 	}
+	
+	public List findStudentByPercentage(int percentage) throws Exception {
+		
+		List list = new ArrayList();
+		MarksheetBean bean = null;
+		Connection conn = null;
+		
+		try {
+			
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			
+			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+			
+			PreparedStatement pstm = conn.prepareStatement("select * from marksheet where (phy+chm+maths)/3 > ?");
+			pstm.setInt(1, percentage);
+			
+			ResultSet rs = pstm.executeQuery();
+			
+			while(rs.next()) {
+				bean = new MarksheetBean();
+				bean.setId(rs.getInt(1));
+				bean.setRollNo(rs.getInt(2));
+				bean.setName(rs.getString(3));
+				bean.setPhy(rs.getInt(4));
+				bean.setChm(rs.getInt(5));
+				bean.setMaths(rs.getInt(6));
+				list.add(bean);
+			}
+			
+			pstm.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			conn.close();
+		}
+		
+		return list;
+	}
+	
+	public List<MarksheetBean> search(MarksheetBean bean) throws Exception {
+		
+		List<MarksheetBean> list = new ArrayList<MarksheetBean>();
+		
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		
+		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/rays", "root", "root");
+		
+		StringBuffer sb = new StringBuffer("select * from marksheet where 1 = 1");
+		
+		if(bean != null) {
+			if(bean.getId() > 0)
+				sb.append(" and ID = " + bean.getId());
+			
+			if(bean.getRollNo() > 0)
+				sb.append(" and ROLLNO = " + bean.getRollNo());
+			
+			if(bean.getName() != null && bean.getName().length() > 0)
+				sb.append(" and NAME like '" + bean.getName() + "%'");
+			
+			if(bean.getPhy() > 0)
+				sb.append(" and PHY > " + bean.getPhy());
+			
+			if(bean.getChm() > 0)
+				sb.append(" and CHM > " + bean.getChm());
+			
+			if(bean.getMaths() > 0)
+				sb.append(" and MATHS > " + bean.getMaths());
+		}
+		
+		PreparedStatement pstm = conn.prepareStatement(sb.toString());
+		
+		ResultSet rs = pstm.executeQuery();
+		
+		while(rs.next()) {
+			bean = new MarksheetBean();
+			bean.setId(rs.getInt(1));
+			bean.setRollNo(rs.getInt(2));
+			bean.setName(rs.getString(3));
+			bean.setPhy(rs.getInt(4));
+			bean.setChm(rs.getInt(5));
+			bean.setMaths(rs.getInt(6));
+			list.add(bean);
+		}
+		
+		return list;
+	}
+	
 }
