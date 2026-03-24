@@ -1,12 +1,19 @@
 package com.rays.jdbc.preparedstatement;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class TestEmployeeModel {
 
 	public static void main(String[] args) throws Exception {
 
 //		testAdd();
 //		testUpdate();
-		testDelete();
+//		testDelete();
+//		testSearchByCompany();
+//		testFindById();
+		testSreach();
 
 	}
 
@@ -49,6 +56,57 @@ public class TestEmployeeModel {
 		EmployeeModel model = new EmployeeModel();
 		model.delete(bean);
 		System.out.println("Record delete");
+	}
+
+	public static void testSearchByCompany() throws Exception {
+
+		List list = new ArrayList();
+
+		EmployeeModel model = new EmployeeModel();
+		list = model.searchByCompany("TCS");
+
+		Iterator i = list.iterator();
+
+		while (i.hasNext()) {
+			EmployeeBean bean = (EmployeeBean) i.next();
+			System.out.println(bean.getID() + " " + bean.getNAME() + " " + bean.getCOMPANY() + " " + bean.getSAALARY()
+					+ " " + bean.getDEPT_NO());
+		}
+	}
+	
+	public static void testFindById() throws Exception {
+		
+		EmployeeBean bean = new EmployeeBean();
+		EmployeeModel model = new EmployeeModel();
+		
+		bean = model.FindById(10);
+		
+		System.out.println(bean.getID());
+		System.out.println(bean.getNAME());
+		System.out.println(bean.getCOMPANY());
+		System.out.println(bean.getSAALARY());
+		System.out.println(bean.getDEPT_NO());
+	}
+	
+	public static void testSreach() throws Exception {
+		
+		List<EmployeeBean> list = new ArrayList<EmployeeBean>();
+		
+		EmployeeBean bean = new EmployeeBean();
+		EmployeeModel model = new EmployeeModel();
+		
+		list = model.search(bean);
+		
+		Iterator<EmployeeBean> it = list.iterator();
+		
+		while(it.hasNext()) {
+			bean = it.next();
+			System.out.print(bean.getID());
+			System.out.print("\t" + bean.getNAME());
+			System.out.print("\t" + bean.getCOMPANY());
+			System.out.print("\t" + bean.getSAALARY());
+			System.out.println("\t" + bean.getDEPT_NO());
+		}
 	}
 
 }

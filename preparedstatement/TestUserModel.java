@@ -1,6 +1,9 @@
 package com.rays.jdbc.preparedstatement;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TestUserModel {
 
@@ -11,7 +14,9 @@ public class TestUserModel {
 //		testDelete();
 //		testFindByPK();
 //		testFindByLogin();
-		testAuthenticate();
+//		testAuthenticate();
+//		testFindAllRecords();
+		testSreach();
 
 	}
 
@@ -114,6 +119,52 @@ public class TestUserModel {
 		else
 			System.out.println("Authentication Failed... Please try again");
 
+	}
+	
+	public static void testFindAllRecords() throws Exception{
+		
+		List list = new ArrayList();
+		UserModel model = new UserModel();
+		
+		list = model.findAllRecords();
+		
+		Iterator i = list.iterator();
+		
+		while(i.hasNext()) {
+			UserBean bean = (UserBean) i.next();
+			System.out.print(bean.getId());
+			System.out.print("\t" + bean.getFirstName());
+			System.out.print("\t" + bean.getLastName());
+			System.out.print("\t" + bean.getLogin());
+			System.out.print("\t" + bean.getPasword());
+			System.out.println("\t" + bean.getDob());
+		}
+	}
+	
+	public static void testSreach() throws Exception {
+		
+		List<UserBean> list = new ArrayList<UserBean>();
+		
+		UserBean bean = new UserBean();
+		UserModel model = new UserModel();
+		 
+//		bean.setFirstName("R");
+//		bean.setLastName("Sharma");
+		
+		list = model.search(bean);
+		
+		Iterator<UserBean> it = list.iterator();
+		
+		while(it.hasNext()) {
+			bean = it.next();
+			System.out.print(bean.getId());
+			System.out.print("\t" + bean.getFirstName());
+			System.out.print("\t" + bean.getLastName());
+			System.out.print("\t" + bean.getLogin());
+			System.out.print("\t" + bean.getPasword());
+			System.out.println("\t" + bean.getDob());
+		}
+		
 	}
 
 }
