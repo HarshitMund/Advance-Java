@@ -151,7 +151,7 @@ public class TestUserModel {
 //		bean.setFirstName("R");
 //		bean.setLastName("Sharma");
 		
-		list = model.search(bean);
+		list = model.search(bean, 1, 3);
 		
 		Iterator<UserBean> it = list.iterator();
 		

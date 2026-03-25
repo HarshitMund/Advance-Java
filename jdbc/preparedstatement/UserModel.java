@@ -274,7 +274,7 @@ public class UserModel {
 		return list;
 	}
 	
-	public List<UserBean> search(UserBean bean) throws Exception {
+	public List<UserBean> search(UserBean bean, int pageNo, int pageSize) throws Exception {
 		
 		List<UserBean> list = new ArrayList<UserBean>();
 		
@@ -294,6 +294,11 @@ public class UserModel {
 			
 			if (bean.getId() != 0 && bean.getId() > 0)
 				sb.append("and id = " + bean.getId());
+		}
+		
+		if(pageSize > 0) {
+			pageNo = (pageNo - 1) * pageSize;
+			sb.append(" limit " + pageNo + ", " + pageSize);
 		}
 		
 		PreparedStatement pstm = conn.prepareStatement(sb.toString());
