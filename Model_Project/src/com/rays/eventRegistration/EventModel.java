@@ -78,7 +78,7 @@ public class EventModel {
 		}
 
 	}
-	
+
 	public void delete(EventBean bean) throws SQLException {
 
 		Connection conn = null;
@@ -90,8 +90,7 @@ public class EventModel {
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/modelproject", "root", "root");
 			conn.setAutoCommit(false);
 
-			PreparedStatement pstm = conn.prepareStatement(
-					"delete from event_registration where id = ?");
+			PreparedStatement pstm = conn.prepareStatement("delete from event_registration where id = ?");
 
 			pstm.setInt(1, bean.getId());
 
@@ -107,25 +106,25 @@ public class EventModel {
 		} finally {
 			conn.close();
 		}
-		
+
 	}
-	
-	public EventBean findByPK(int id) throws Exception{
-		
+
+	public EventBean findByPK(int id) throws Exception {
+
 		EventBean bean = null;
 		Connection conn = null;
-		
+
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			
+
 			conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/modelproject", "root", "root");
-			
+
 			PreparedStatement pstm = conn.prepareStatement("select * from event_registration where id = ?");
 			pstm.setInt(1, id);
-			
+
 			ResultSet rs = pstm.executeQuery();
-			
-			while(rs.next()) {
+
+			while (rs.next()) {
 				bean = new EventBean();
 				bean.setId(rs.getInt(1));
 				bean.setPraticipant_name(rs.getString(2));
@@ -133,15 +132,15 @@ public class EventModel {
 				bean.setEmail(rs.getString(4));
 				bean.setRegistration_date(rs.getDate(5));
 			}
-			
+
 			pstm.close();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			conn.close();
 		}
-		
+
 		return bean;
 	}
 
