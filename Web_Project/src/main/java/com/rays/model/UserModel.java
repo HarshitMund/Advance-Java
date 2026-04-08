@@ -65,7 +65,7 @@ public class UserModel {
 		Connection conn = JDBCDataSource.getConnection();
 
 		PreparedStatement pstmt = conn.prepareStatement(
-				"update st_user set firstName = ?, lastName = ?, login = ?, password = ?, dob = ? where id = ?");
+				"update st_user set FirstName = ?, LastName = ?, login = ?, pasword = ?, dob = ? where id = ?");
 
 		pstmt.setString(1, bean.getFirstName());
 		pstmt.setString(2, bean.getLastName());
@@ -126,7 +126,7 @@ public class UserModel {
 	public UserBean authenticate(String login, String password) throws Exception {
 
 		Connection conn = JDBCDataSource.getConnection();
-		PreparedStatement pstmt = conn.prepareStatement("select * from st_user where login = ? and password = ?");
+		PreparedStatement pstmt = conn.prepareStatement("select * from st_user where login = ? and pasword = ?");
 
 		pstmt.setString(1, login);
 		pstmt.setString(2, password);
@@ -181,10 +181,10 @@ public class UserModel {
 
 		if (bean != null) {
 			if (bean.getFirstName() != null && bean.getFirstName().length() > 0) {
-				sql.append(" and firstName like '" + bean.getFirstName() + "%'");
+				sql.append(" and FirstName like '" + bean.getFirstName() + "%'");
 			}
 			if (bean.getLastName() != null && bean.getLastName().length() > 0) {
-				sql.append(" and lastName like '" + bean.getLastName() + "%'");
+				sql.append(" and LastName like '" + bean.getLastName() + "%'");
 			}
 		}
 
