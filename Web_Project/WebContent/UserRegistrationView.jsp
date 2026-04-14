@@ -13,7 +13,6 @@
 	%>
 
 	<%@ include file="Header.jsp"%>
-
 	<div align="center">
 		<h1>User Registration</h1>
 		<h3 style="color: green"><%=succesMsg != null ? succesMsg : ""%></h3>

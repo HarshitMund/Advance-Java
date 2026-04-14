@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.rays.bean.UserBean;
 import com.rays.model.UserModel;
 
-@WebServlet("/UserRegistrationCtl") //wild card mapping
+@WebServlet("/UserRegistrationCtl")
 public class UserRegistrationCtl extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
